@@ -1,84 +1,119 @@
-#include<stdio.h>
-#include<stdlib.h>
-typedef int position;
-struct q{
-	int*data;
-	position front,rear;
-	int maxsize;
+#include <stdio.h>
+#include <stdlib.h>
+#include<string.h>
+#define ERROR 1e8
+typedef int ElementType;
+enum  Operation{push,pop,end};
+//typedef enum { false, true } bool;
+typedef int Position;
+struct SNode {
+    ElementType *Data;
+    Position Top1, Top2;
+    int MaxSize;
 };
-typedef struct q* ptr;
-typedef ptr queue;
-
-queue creaq(int maxsize)
+typedef struct SNode *Stack;
+Stack CreateStack(int MaxSize)
 {
-	queue qq=(queue)malloc(sizeof(struct q));
-	qq->data=(int*)malloc(maxsize*sizeof(int));
-	qq->front=qq->rear=0;
-	qq->maxsize=maxsize;
-	return qq; 
+    Stack stack = (Stack)malloc(sizeof(struct SNode));
+    stack->Data = (int *)malloc(sizeof(ElementType)* MaxSize);
+    stack->Top1 = -1;
+    stack->Top2 = MaxSize;
+    stack->MaxSize = MaxSize;
+    return stack;
 }
-bool IsFull(queue q)
+bool Push(Stack S, ElementType X, int Tag)
 {
-	return ((q->rear+1)%q->maxsize==q->front);
+    if (S == NULL)return false;
+    if (S->Top1+1==S->Top2){
+        printf("Stack Full\n");
+        return false;
+    }
+
+    if (Tag == 1)
+        S->Data[++S->Top1] = X;
+     else S->Data[--S->Top2] = X;
+     return true;
 }
-bool add(queue q,int x)
+ElementType Pop(Stack S, int Tag)
 {
-	if(IsFull(q))
-	{
-		printf("队列满了\n");
-		return false;
+    if (S == NULL)return ERROR;
+    if (Tag == 1){
+        if (S->Top1 == -1)
+        {
+            printf("Stack %d Empty\n",Tag);
+            return ERROR;
+        }
+        return S->Data[S->Top1--];
+    }
+    
+    if (S->Top2 == S->MaxSize)
+    {
+        printf("Stack %d Empty\n", Tag);
+        return ERROR;
+    }
+    return S->Data[S->Top2++];
+    
+    
+}
+
+Operation GetOp(){
+	char s[10];
+	scanf("%d",&s);
+    if(strcmp(s,"push")==0){
+    	return push;
 	}
-	else
-	{
-		q->rear=(q->rear+1)%q->maxsize;
-		q->data[q->rear]=x;
-		return true;
+	if(strcmp(s,"pop")==0){
+		return pop;
+	}
+	if(strcmp(s,"end")==0){
+		return end;
 	}
 }
-bool IsEmpty(queue q)
+void PrintStack(Stack S,int Tag){
+	if(Tag==1){
+		printf("pop from stack 1:");
+		for(int i=S->Top1;i>0;i--){
+			printf("%d\n",S->Data[S->Top1]);
+			S->Top1--;
+		}
+	}
+	if(Tag==2){
+		printf("pop from stack 2:");
+		for(int i=S->Top2;i<S->MaxSize;i++){
+			printf("%d\n",S->Data[S->Top2]);
+			S->Top2++;
+		}
+	}
+}
+
+int main()
 {
-	return (q->front==q->rear);
+    int N, Tag, X;
+    Stack S;
+    int done = 0;
+
+    scanf("%d", &N);
+    S = CreateStack(N);
+    while ( !done ) {
+        switch( GetOp() ) {
+        case push: 
+            {scanf("%d %d", &Tag, &X);
+            if (!Push(S, X, Tag)) printf("Stack %d is Full!\n", Tag);}
+            break;
+        case pop:
+            {
+			scanf("%d", &Tag);
+            X = Pop(S, Tag);
+            if ( X==ERROR ) printf("Stack %d is Empty!\n", Tag);}
+            break;
+        case end:
+            {
+			PrintStack(S, 1);
+            PrintStack(S, 2);
+            done = 1;}
+            break;
+        }
+    }
+    return 0;
 }
-int deleteq(queue q)
-{
-	if(IsEmpty(q))
-	{
-		printf("队列空\n");
-		return false;
-	}
-	else{
-		q->front=(q->front+1)%q->maxsize;
-		return q->data[q->front];
-	}
-}
-int main(){
-	struct q *qq=creaq(5);
-	IsFull(qq);
-	IsEmpty(qq);
-	deleteq(qq);
-	add(qq,1);
-	add(qq,3);
-	add(qq,3);
-	add(qq,3);
-	for(int i=1;i<5;i++)
-	{
-		printf("%d\n",qq->data[i]);
-		
-	}
-	return 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
