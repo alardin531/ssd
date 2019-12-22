@@ -92,7 +92,7 @@ int main()
     Stack S;
     int done = 0;
 
-printf("we must must win win win!win win win wait me back\n"); 
+printf("we must must win win win!win win win wait me back I'be back\n"); 
     scanf("%d", &N);
     S = CreateStack(N);
     while ( !done ) {
