@@ -4,7 +4,7 @@ void setup() {
     Serial.begin(9600);
     pinMode(redPin, OUTPUT);
 }
-void loop() {
+void loop(){
     int i;
     if (Serial.available()>0)
     {
@@ -151,7 +151,6 @@ void loop() {
     }
     
 }
-
 void sp(){
     Serial.print("");
 }
@@ -167,4 +166,3 @@ void l(){//摩斯密码中的划
 	digitalWrite(redPin,LOW);
 	delay(300);
 }
-
